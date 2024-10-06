@@ -89,7 +89,7 @@ func (d *Dictionary) Rank(pos int) int {
 	return r
 }
 
-// Rank returns the number of 0-bits in the bit vector up to the given position.
+// Rank0 returns the number of 0-bits in the bit vector up to the given position.
 // It efficiently calculates the number of set bits from the start to the specified position.
 func (d *Dictionary) Rank0(pos int) int {
 	return pos - d.Rank(pos) + 1
@@ -110,7 +110,7 @@ func (d *Dictionary) Select(rank int) (pos int) {
 	return l
 }
 
-// Select returns the smallest position of the 0-bit with the specified rank in the bit vector.
+// Select0 returns the smallest position of the 0-bit with the specified rank in the bit vector.
 // It efficiently finds the first occurrence of the specified number of set bits.
 func (d *Dictionary) Select0(rank int) (pos int) {
 	l, r := 0, d.Len()
