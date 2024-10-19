@@ -17,14 +17,19 @@ import (
 )
 
 const (
+	// bitsSize represents the number of bits in each element of the underlying bit array (1 byte = 8 bits).
 	bitsSize              = 8
+
+	// bitsPerRankIndexLarge specifies the number of bit units that one large rank index entry spans.
 	bitsPerRankIndexLarge = 8191
 )
 
 // Dictionary represents a succinct bit vector with rank and select operations.
 // It stores the bits as a slice of bytes and maintains rank indexes for efficient queries.
 type Dictionary struct {
+	// Array of bits stored in bytes.
 	bits []uint8
+	// Rank index structure for efficient rank operations.
 	rank rankIndex
 }
 
@@ -45,10 +50,12 @@ func (d *Dictionary) Len() int {
 	return len(d.bits) * bitsSize
 }
 
+// bitsIndex returns the index in the byte array (bits) that corresponds to the given bit position.
 func (d *Dictionary) bitsIndex(pos int) int {
 	return pos / bitsSize
 }
 
+// bitPos returns the position of a specific bit within a byte in the bit array.
 func (d *Dictionary) bitPos(pos int) int {
 	return pos % bitsSize
 }
@@ -125,11 +132,15 @@ func (d *Dictionary) Select0(rank int) (pos int) {
 	return l
 }
 
+// rankIndex represents the structure used to store rank information for efficient rank query.
 type rankIndex struct {
+	// Small rank index storing cumulative counts within smaller intervals.
 	small []uint16
+	// Large rank index storing cumulative counts at larger intervals (e.g., every bitsPerRankIndexLarge bits).
 	large []int
 }
 
+// newRankIndex creates a new rankIndex of the specified size.
 func newRankIndex(size int) rankIndex {
 	sl := size/bitsSize + 1
 	if size%bitsSize != 0 {
@@ -148,10 +159,12 @@ func newRankIndex(size int) rankIndex {
 	}
 }
 
+// largeIndex returns the index in the large rank index that corresponds to the given bitsIndex.
 func (r *rankIndex) largeIndex(bitsIndex int) int {
 	return bitsIndex / bitsPerRankIndexLarge
 }
 
+// update updates the rank index with the cumulative count of 1-bits at the given bitsIndex.
 func (r *rankIndex) update(bitsIndex, onesCount int) {
 	li := r.largeIndex(bitsIndex)
 	if bitsIndex%bitsPerRankIndexLarge == bitsPerRankIndexLarge-1 {
@@ -161,10 +174,12 @@ func (r *rankIndex) update(bitsIndex, onesCount int) {
 	r.small[bitsIndex+1] = uint16(onesCount - r.large[li])
 }
 
+// rank returns the cumulative number of 1-bits up to the given bitsIndex.
 func (r *rankIndex) rank(bitsIndex int) int {
 	return int(r.large[r.largeIndex(bitsIndex)] + int(r.small[bitsIndex]))
 }
 
+// oneBitsCount returns the number of 1-bits in the byte x, up to the given bit position pos.
 func oneBitsCount(x uint8, pos int) int {
 	return bits.OnesCount8(x & uint8((1<<(pos+1))-1))
 }
