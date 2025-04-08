@@ -1,12 +1,12 @@
 // Package dictionary provides a succinct indexable dictionary with space-efficient support for rank and select operations.
 //
-// This package implements a compressed bit vector data structure that allows efficient querying of bit positions. 
+// This package implements a compressed bit vector data structure that allows efficient querying of bit positions.
 // It supports the following operations:
 //
-//  - Rank: Returns the number of 1-bits up to a given position.
-//  - Rank0: Returns the number of 0-bits up to a given position.
-//  - Select: Finds the smallest position of the 1-bit with the specified rank.
-//  - Select0: Finds the smallest position of the 0-bit with the specified rank.
+//   - Rank: Returns the number of 1-bits up to a given position.
+//   - Rank0: Returns the number of 0-bits up to a given position.
+//   - Select: Finds the smallest position of the 1-bit with the specified rank.
+//   - Select0: Finds the smallest position of the 0-bit with the specified rank.
 //
 // The data structure is designed to minimize memory usage while providing fast access to bit-level information.
 // It is useful for applications where memory constraints are critical, and quick bit manipulation is required.
@@ -18,7 +18,7 @@ import (
 
 const (
 	// bitsSize represents the number of bits in each element of the underlying bit array (1 byte = 8 bits).
-	bitsSize              = 8
+	bitsSize = 8
 
 	// bitsPerRankIndexLarge specifies the number of bit units that one large rank index entry spans.
 	bitsPerRankIndexLarge = 8191
